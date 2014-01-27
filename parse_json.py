@@ -1,13 +1,13 @@
 import json
 
 data_path = "data/yelp_phoenix_academic_dataset/"
-checkin_file = "yelp_academic_dataset_checkin.json"
+filenames = ["yelp_academic_dataset_checkin.json", "yelp_academic_dataset_business.json", "yelp_academic_dataset_user.json", "yelp_academic_dataset_review.json"]
+results = {}
 
-with open(data_path + checkin_file, "r") as in_file:
-    lines = in_file.readlines()
-    jsons = [json.loads(x.strip()) for x in lines]
-    print len(jsons)
+for file in filenames:
+    with open(data_path + file, "r") as in_file:
+        lines = in_file.readlines()
+        jsons = [json.loads(x.strip()) for x in lines]
+    results[file] = jsons
 
-for j in jsons:
-    # insert into a table
-    print j
+print len(results)
