@@ -1,5 +1,7 @@
 # unzipped data files (too big)
 data/*
+test.db
+test.db-journal
 # PyCharm stuff
 .idea/*
 
