@@ -28,7 +28,7 @@ ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+TEMPLATE_DIRS = 'C:/Python27/mysite/templates/admin/base_site.html'
 
 
 # Application definition
@@ -43,7 +43,7 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
     'polls',
 )
 

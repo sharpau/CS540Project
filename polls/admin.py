@@ -11,6 +11,6 @@ class PollAdmin(admin.ModelAdmin):
         ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
     ]
     inlines = [ChoiceInline]
-
+	
 	
 admin.site.register(Poll, PollAdmin)
