@@ -1,6 +1,7 @@
 import json
 import sqlite3
 
+
 data_path = "data/"
 filenames = ["yelp_academic_dataset_checkin.json", "yelp_academic_dataset_business.json", "yelp_academic_dataset_user.json", "yelp_academic_dataset_review.json", "yelp_academic_dataset_tip.json"]
 results = {}
@@ -17,10 +18,19 @@ print len(results)
 conn = sqlite3.connect("test.db")
 c = conn.cursor()
 c.execute("DROP TABLE IF EXISTS businesses")
-c.execute("CREATE TABLE businesses (business_id text, name text, stars real)")
+c.execute("CREATE TABLE businesses (business_id text, name text, stars real, checkins text)")
 for b in results[filenames[1]]:
     # businesses
-    c.execute("INSERT INTO businesses VALUES (?,?,?)", (b["business_id"], b["name"], b["stars"]))
+    checkins = [x for x in results[filenames[0]] if x["business_id"] == b["business_id"]]
+
+    if len(checkins) == 1:
+        dict_as_str = str(checkins[0]["checkin_info"])
+        c.execute("INSERT INTO businesses VALUES (?,?,?,?)", (b["business_id"], b["name"], b["stars"], dict_as_str))
+    elif len(checkins) == 0:
+        c.execute("INSERT INTO businesses VALUES (?,?,?,?)", (b["business_id"], b["name"], b["stars"], ""))
+    else:
+        assert False
+
 
 c.execute("DROP TABLE IF EXISTS reviews")
 # I think there are multiple kinds of votes that we may want to separate out
@@ -44,7 +54,7 @@ for t in results[filenames[4]]:
 
 for row in c.execute("SELECT * FROM businesses WHERE stars > 4.9"):
     print row
-for row in c.execute("SELECT * FROM users WHERE stars > 4.9"):
-    print row
-for row in c.execute("SELECT * FROM reviews WHERE stars > 4.9"):
-    print row
+#for row in c.execute("SELECT * FROM users WHERE stars > 4.9"):
+#    print row
+#for row in c.execute("SELECT * FROM reviews WHERE stars > 4.9"):
+#    print row
