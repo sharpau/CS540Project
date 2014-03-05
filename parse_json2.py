@@ -13,7 +13,7 @@ for file in filenames:
         jsons = [json.loads(x.strip()) for x in lines]
     results[file] = jsons
 
-print len(results)
+print "Parsing jsons into dicts done"
 
 # http://docs.python.org/2/library/sqlite3.html
 conn = sqlite3.connect("test.db")
@@ -34,25 +34,32 @@ for b in results[filenames[1]]:
     else:
         assert False
 
+print "Businesses done"
+
+user_avg_dict = {}
+c.execute("DROP TABLE IF EXISTS schemastuff_users")
+c.execute("CREATE TABLE schemastuff_users (id integer, user_id text, review_count integer, stars real)")
+for u in results[filenames[2]]:
+    c.execute("INSERT INTO schemastuff_users VALUES (?,?,?,?)", (idx, u["user_id"], u["review_count"], u["average_stars"]))
+    user_avg_dict[u["user_id"]] = float(u["average_stars"])
+    idx += 1
+
+print "Users done"
 
 c.execute("DROP TABLE IF EXISTS schemastuff_reviews")
 c.execute("CREATE TABLE schemastuff_reviews (id integer, business_id text, user_id text, stars real, "
           "adj_stars real, content text, date text, day text, funny_votes text, useful_votes text, cool_votes text)")
+
 for r in results[filenames[3]]:
     day_of_week = datetime.datetime.strptime(r["date"], '%Y-%m-%d').strftime('%A')
-    avg_stars = [x["average_stars"] for x in results[filenames[2]] if x["user_id"] == r["user_id"]]
-    adj_stars = float(r["stars"]) - float(avg_stars[0])
+    adj_stars = float(r["stars"]) - user_avg_dict[r["user_id"]]
     c.execute("INSERT INTO schemastuff_reviews VALUES (?,?,?,?,?,?,?,?,?,?,?)", (idx, r["business_id"], r["user_id"],
                                                                             r["stars"], adj_stars, r["text"],
                                                                             r["date"], day_of_week, r["votes"]["funny"],
                                                                             r["votes"]["useful"], r["votes"]["cool"]))
     idx += 1
 
-c.execute("DROP TABLE IF EXISTS schemastuff_users")
-c.execute("CREATE TABLE schemastuff_users (id integer, user_id text, review_count integer, stars real)")
-for u in results[filenames[2]]:
-    c.execute("INSERT INTO schemastuff_users VALUES (?,?,?,?)", (idx, u["user_id"], u["review_count"], u["average_stars"]))
-    idx += 1
+print "Reviews done"
 
 c.execute("DROP TABLE IF EXISTS schemastuff_tips")
 c.execute("CREATE TABLE schemastuff_tips (id integer, business_id text, user_id text, date text, likes integer, content text)")
@@ -60,9 +67,11 @@ for t in results[filenames[4]]:
     c.execute("INSERT INTO schemastuff_tips VALUES (?,?,?,?,?,?)", (idx, t["business_id"], t["user_id"], t["date"], t["likes"], t["text"]))
     idx += 1
 
+print "Tips done"
+
 #for row in c.execute("SELECT * FROM schemastuff_businesses WHERE stars > 4.9"):
     #print row
 #for row in c.execute("SELECT * FROM users WHERE stars > 4.9"):
 #    print row
-for row in c.execute("SELECT * FROM reviews WHERE stars > 4.9"):
+for row in c.execute("SELECT * FROM schemastuff_reviews WHERE stars > 4.9"):
     print row
