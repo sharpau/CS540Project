@@ -37,26 +37,45 @@ for b in results[filenames[1]]:
 print "Businesses done"
 
 user_avg_dict = {}
+user_fans_dict = {}
+user_avg_votes_dict = {}
 c.execute("DROP TABLE IF EXISTS schemastuff_users")
 c.execute("CREATE TABLE schemastuff_users (id integer, user_id text, review_count integer, stars real)")
 for u in results[filenames[2]]:
     c.execute("INSERT INTO schemastuff_users VALUES (?,?,?,?)", (idx, u["user_id"], u["review_count"], u["average_stars"]))
     user_avg_dict[u["user_id"]] = float(u["average_stars"])
+    user_fans_dict[u["user_id"]] = float(u["fans"])
+    user_avg_votes_dict[u["user_id"]] = (float(u["votes"]["funny"]) + float(u["votes"]["cool"]) + float(u["votes"]["useful"]) + 3) / float(u["review_count"])
     idx += 1
 
 print "Users done"
 
 c.execute("DROP TABLE IF EXISTS schemastuff_reviews")
 c.execute("CREATE TABLE schemastuff_reviews (id integer, business_id text, user_id text, stars real, "
-          "adj_stars real, content text, date text, day text, funny_votes text, useful_votes text, cool_votes text)")
+          "adj_stars real, content text, date text, day text, funny_votes integer, useful_votes integer, cool_votes integer, "
+          "user_fans int, user_avg_votes real, breakfast int, lunch int, dinner int)")
 
 for r in results[filenames[3]]:
+    breakfast = 0
+    lunch = 0
+    dinner = 0
+    if r["text"].find("breakfast") != -1 or r["text"].find("morning") != -1:
+        breakfast = 1
+    if r["text"].find("lunch") != -1 or r["text"].find("afternoon") != -1 or r["text"].find("midday") != -1:
+        lunch = 1
+    if r["text"].find("dinner") != -1 or r["text"].find("evening") != -1 or r["text"].find("night") != -1 or r["text"].find("drinks") != -1:
+        dinner = 1
+
+
+    user_id = r["user_id"]
     day_of_week = datetime.datetime.strptime(r["date"], '%Y-%m-%d').strftime('%A')
-    adj_stars = float(r["stars"]) - user_avg_dict[r["user_id"]]
-    c.execute("INSERT INTO schemastuff_reviews VALUES (?,?,?,?,?,?,?,?,?,?,?)", (idx, r["business_id"], r["user_id"],
+    adj_stars = float(r["stars"]) - user_avg_dict[user_id]
+    c.execute("INSERT INTO schemastuff_reviews VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (idx, r["business_id"], user_id,
                                                                             r["stars"], adj_stars, r["text"],
                                                                             r["date"], day_of_week, r["votes"]["funny"],
-                                                                            r["votes"]["useful"], r["votes"]["cool"]))
+                                                                            r["votes"]["useful"], r["votes"]["cool"],
+                                                                            user_fans_dict[user_id], user_avg_votes_dict[user_id],
+                                                                            breakfast, lunch, dinner))
     idx += 1
 
 print "Reviews done"
@@ -73,5 +92,5 @@ print "Tips done"
     #print row
 #for row in c.execute("SELECT * FROM users WHERE stars > 4.9"):
 #    print row
-for row in c.execute("SELECT * FROM schemastuff_reviews WHERE stars > 4.9"):
+for row in c.execute("SELECT * FROM schemastuff_reviews WHERE stars > 4.9 AND dinner = 1"):
     print row
