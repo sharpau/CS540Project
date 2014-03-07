@@ -14,9 +14,15 @@ class reviews(models.Model):
 	content = models.CharField(max_length=200)
 	date = models.CharField(max_length=200)
 	day = models.CharField(max_length=200)
-	funny_votes = models.CharField(max_length=200)
-	useful_votes = models.CharField(max_length=200)
-	cool_votes = models.CharField(max_length=200)
+	funny_votes = models.IntegerField()
+	useful_votes = models.IntegerField()
+	cool_votes = models.IntegerField()
+	user_fans = models.IntegerField()
+	user_avg_votes = models.DecimalField(max_digits=5, decimal_places=2)
+	breakfast = models.IntegerField()
+	lunch = models.IntegerField()
+	dinner = models.IntegerField()
+	
 	
 class users(models.Model):
 	user_id = models.CharField(max_length=200)
