@@ -20,6 +20,7 @@ conn = sqlite3.connect("test.db")
 c = conn.cursor()
 c.execute("DROP TABLE IF EXISTS schemastuff_businesses")
 c.execute("CREATE TABLE schemastuff_businesses (id integer, business_id text, name text, stars real, checkins text)")
+c.execute("CREATE INDEX business_id_idx ON schemastuff_businesses (business_id)")
 for b in results[filenames[1]]:
     # businesses
     checkins = [x for x in results[filenames[0]] if x["business_id"] == b["business_id"]]
@@ -54,6 +55,7 @@ c.execute("DROP TABLE IF EXISTS schemastuff_reviews")
 c.execute("CREATE TABLE schemastuff_reviews (id integer, business_id text, user_id text, stars real, "
           "adj_stars real, content text, date text, day text, funny_votes integer, useful_votes integer, cool_votes integer, "
           "user_fans int, user_avg_votes real, breakfast int, lunch int, dinner int)")
+c.execute("CREATE INDEX review_business_id_idx ON schemastuff_reviews(business_id)")
 
 for r in results[filenames[3]]:
     breakfast = 0
