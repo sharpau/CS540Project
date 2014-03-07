@@ -16,7 +16,7 @@ for file in filenames:
 print "Parsing jsons into dicts done"
 
 # http://docs.python.org/2/library/sqlite3.html
-conn = sqlite3.connect("test.db")
+conn = sqlite3.connect("project/test.db")
 c = conn.cursor()
 c.execute("DROP TABLE IF EXISTS schemastuff_businesses")
 c.execute("CREATE TABLE schemastuff_businesses (id integer, business_id text, name text, stars real, checkins text)")
