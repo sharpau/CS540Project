@@ -1,1 +1,4 @@
-<p> you're in index </p>
+<form action="/main/business_list/" method="post">
+{% csrf_token %}{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>

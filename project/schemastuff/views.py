@@ -4,6 +4,20 @@ from django.core.urlresolvers import reverse
 from django.views import generic
 from django.http import HttpResponse
 
+from schemastuff.models import businesses, reviews, users, tips
+
+from forms import BusinessForm
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the index.")
+    if request.method == 'post':
+        form = BusinessForm(request.POST)
+    else:
+        form = BusinessForm()
+    return render(request, 'schemastuff/index.html', {
+        'form': form,
+    })
+	
+def business_list(request):
+    list = businesses.objects.raw("SELECT * FROM schemastuff_businesses where name like %s", ["%" + request.POST['Business'] + "%" ])
+    context = {'list': list}
+    return render(request, 'schemastuff/business_list.html', context)

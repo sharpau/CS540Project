@@ -1,0 +1,8 @@
+{% if list %}
+    <ul>
+    {% for businesses in list %}
+	<li>{{ businesses.name }}</li>    {% endfor %}
+    </ul>
+{% else %}
+    <p>No businesses are available.</p>
+{% endif %}
