@@ -12,7 +12,7 @@ class MyDB extends SQLite3
 }
 
 $db = new MyDB();
-$result = $db->query("SELECT * FROM schemastuff_businesses where id = '$id'");
+$result = $db->query("SELECT * FROM businesses where business_id = '$id'");
 while($row = $result->fetchArray())
   {
   echo $row['business_id'] . '<br>';

@@ -11,13 +11,13 @@ class MyDB extends SQLite3
 }
 
 $db = new MyDB();
-$result = $db->query("SELECT * FROM schemastuff_businesses order by name");
+$result = $db->query("SELECT * FROM businesses order by name");
 
 echo "<br><center><form action='detail.php' method='post'>";
 echo '<select name = "id" size = 1>';
 while($row = $result->fetchArray())
   {
-	echo "<option value=" .$row['id'] . ">" . $row['name'] . "</option>";
+	echo "<option value=" .$row['business_id'] . ">" . $row['name'] . "</option>";
   }
 echo "</select>";
 echo "<input type='submit' />";
