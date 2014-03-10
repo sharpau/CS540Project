@@ -10,37 +10,60 @@ class MyDB extends SQLite3
         $this->open('test.db');
     }
 }
-$total_stars_friends = 0;
-$total_weight = 0;
-$stars = 0;
-$adj_stars = 0;
-$num = 0;
-$total_stars_friends = 0;
-$user_votes = 0;
-$user_votes_adj = 0;
-$vote_weight = 0;
-$cool_votes = 0;
-$cool_votes_adj = 0;
-$cool_weight = 0;
-$funny_votes = 0;
-$funny_votes_adj = 0;
-$funny_weight = 0;
-$useful_votes = 0;
-$useful_votes_adj = 0;
-$useful_weight = 0;
-$breakfast = 0;
-$breakfast_stars = 0;
-$breakfast_stars_adj = 0;
-$lunch = 0;
-$lunch_stars = 0;
-$lunch_stars_adj = 0;
-$dinner = 0;
-$dinner_stars = 0;
-$dinner_stars_adj = 0;
+$syear = $_POST['syear'];
+$smonth = $_POST['smonth'];
+$sday = $_POST['sday'];
+if ($_POST['smonth'] < 10) $smonth = '0' .  $_POST['smonth'];
+if ($_POST['sday'] < 10) $sday = '0' .  $_POST['sday'];
+$start_date = $syear . '-' . $smonth . '-' . $sday;
+$eyear = $_POST['eyear'];
+$emonth = $_POST['emonth'];
+$eday = $_POST['eday'];
+if ($_POST['emonth'] < 10) $emonth = '0' .  $_POST['emonth'];
+if ($_POST['eday'] < 10) $eday = '0' .  $_POST['eday'];
+$end_date = $eyear . '-' . $emonth . '-' . $eday;
+echo "Start Date: " . $_POST['sday'] . '-' . $_POST['smonth'] . '-' . $_POST['syear'] . '<br>';
+echo "End Date: " . $_POST['eday'] . '-' . $_POST['emonth'] . '-' . $_POST['eyear'] . '<br>';
+echo "You Chose: ";
+if($_POST['m'] == 'Monday') echo "Monday, ";
+if($_POST['t'] == 'Tuesday') echo "Tuesday, ";
+if($_POST['w'] == 'Wednesday') echo "Wednesday, ";
+if($_POST['th'] == 'Thursday') echo "Thursday, ";
+if($_POST['f'] == 'Friday') echo "Friday, ";
+if($_POST['s'] == 'Saturday') echo "Saturday, ";
+if($_POST['su'] == 'Sunday') echo "Sunday, ";
+$total_stars_friends = 0.;
+$total_weight = 0.;
+$stars = 0.;
+$adj_stars = 0.;
+$num = 0.;
+$total_stars_friends = 0.;
+$user_votes = 0.;
+$user_votes_adj = 0.;
+$vote_weight = 0.;
+$cool_votes = 0.;
+$cool_votes_adj = 0.;
+$cool_weight = 0.;
+$funny_votes = 0.;
+$funny_votes_adj = 0.;
+$funny_weight = 0.;
+$useful_votes = 0.;
+$useful_votes_adj = 0.;
+$useful_weight = 0.;
+$breakfast = 0.;
+$breakfast_stars = 0.;
+$breakfast_stars_adj = 0.;
+$lunch = 0.;
+$lunch_stars = 0.;
+$lunch_stars_adj = 0.;
+$dinner = 0.;
+$dinner_stars = 0.;
+$dinner_stars_adj = 0.;
 $db = new MyDB();
 $result = $db->query("SELECT * FROM reviews where business_id = '$id'");
 while($row = $result->fetchArray())
   {
+  if($row['date'] >= $start_date and $row['date'] <= $end_date){
   $stars += $row['stars'];
   $num++;
   $adj_stars += $row['adj_stars'];
@@ -75,8 +98,7 @@ while($row = $result->fetchArray())
 	$dinner_stars_adj += $row['adj_stars'];
   }
   }
-
-
+  }
 echo "<table border='1'>
 <tr>
 <th>Metric</th>
@@ -85,8 +107,8 @@ echo "<table border='1'>
 </tr>";
 echo "<tr>";
 echo "<td>" . "Unweighted" . "</td>";
-echo "<td><center>" . number_format($stars/$num) . "</td>";
-echo "<td><center>" . number_format($adj_stars/$num) . "</td>";
+echo "<td><center>" . number_format($stars/$num,2) . "</td>";
+echo "<td><center>" . number_format($adj_stars/$num,2) . "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by user friends" . "</td>";
@@ -96,7 +118,7 @@ echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by user votes" . "</td>";
 echo "<td><center>" . number_format($user_votes/$vote_weight,2) . "</td>";
-echo "<td><center>" . number_format($user_votes_adj/$cool_weight,2) . "</td>";
+echo "<td><center>" . number_format($user_votes_adj/$vote_weight,2) . "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by review votes" . "</td>";
