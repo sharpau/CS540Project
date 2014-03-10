@@ -21,3 +21,7 @@ def business_list(request):
     list = businesses.objects.raw("SELECT * FROM schemastuff_businesses where name like %s", ["%" + request.POST['Business'] + "%" ])
     context = {'list': list}
     return render(request, 'schemastuff/business_list.html', context)
+	
+def detail(request, businesses_id):
+        poll = schemastuff.objects.get(pk=businesses_id)
+    return render(request, 'polls/detail.html', {'poll': poll})

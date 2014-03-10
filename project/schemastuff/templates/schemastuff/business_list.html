@@ -1,7 +1,7 @@
 {% if list %}
     <ul>
     {% for businesses in list %}
-	<li>{{ businesses.name }}</li>    {% endfor %}
+	<li><a href="{% url 'main:detail' businesses.id %}">{{ businesses.name }}</a></li>    {% endfor %}
     </ul>
 {% else %}
     <p>No businesses are available.</p>
