@@ -38,14 +38,14 @@ for b in results[filenames[1]]:
 print "Businesses done"
 
 user_avg_dict = {}
-user_fans_dict = {}
+user_friends_dict = {}
 user_avg_votes_dict = {}
 c.execute("DROP TABLE IF EXISTS users")
 c.execute("CREATE TABLE users (user_id text, review_count integer, stars real)")
 for u in results[filenames[2]]:
     c.execute("INSERT INTO users VALUES (?,?,?)", (u["user_id"], u["review_count"], u["average_stars"]))
     user_avg_dict[u["user_id"]] = float(u["average_stars"])
-    user_fans_dict[u["user_id"]] = float(u["fans"])
+    user_friends_dict[u["user_id"]] = float(len(u["friends"]))
     user_avg_votes_dict[u["user_id"]] = (float(u["votes"]["funny"]) + float(u["votes"]["cool"]) + float(u["votes"]["useful"]) + 3) / float(u["review_count"])
 
 print "Users done"
@@ -53,7 +53,7 @@ print "Users done"
 c.execute("DROP TABLE IF EXISTS reviews")
 c.execute("CREATE TABLE reviews (business_id text, user_id text, stars real, "
           "adj_stars real, content text, date text, day text, funny_votes integer, useful_votes integer, cool_votes integer, "
-          "user_fans int, user_avg_votes real, breakfast int, lunch int, dinner int)")
+          "user_friends int, user_avg_votes real, breakfast int, lunch int, dinner int)")
 c.execute("CREATE INDEX review_business_id_idx ON reviews(business_id)")
 
 for r in results[filenames[3]]:
@@ -75,7 +75,7 @@ for r in results[filenames[3]]:
                                                                             r["stars"], adj_stars, r["text"],
                                                                             r["date"], day_of_week, r["votes"]["funny"],
                                                                             r["votes"]["useful"], r["votes"]["cool"],
-                                                                            user_fans_dict[user_id], user_avg_votes_dict[user_id],
+                                                                            user_friends_dict[user_id], user_avg_votes_dict[user_id],
                                                                             breakfast, lunch, dinner))
 
 
