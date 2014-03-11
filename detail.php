@@ -10,6 +10,10 @@ class MyDB extends SQLite3
         $this->open('test.db');
     }
 }
+$db = new MyDB();
+$result = $db->query("SELECT name FROM businesses where business_id = '$id'");
+$bname = $result->fetchArray();
+echo '<br><br><br><center><h1>' . $bname['name'] . '</h1>' . '<br>';
 $syear = $_POST['syear'];
 $smonth = $_POST['smonth'];
 $sday = $_POST['sday'];
@@ -59,9 +63,8 @@ $lunch_stars = 0.;
 $lunch_stars_adj = 0.;
 $dinner = 0.;
 $dinner_stars = 0.;
-$dinner_stars_adj = 0.;
-$db = new MyDB();
-$result = $db->query("SELECT * FROM reviews where business_id = '$id'");
+$dinner_stars_adj = 0.;$result = $db->query("SELECT * FROM reviews where business_id = '$id'");
+
 while($row = $result->fetchArray())
   {
   if($row['date'] >= $start_date and $row['date'] <= $end_date and in_array($row['day'],$days)){
@@ -100,7 +103,8 @@ while($row = $result->fetchArray())
   }
   }
   }
-echo "<table border='1'>
+  echo "<center>";
+echo "<br><table border='1'>
 <tr>
 <th>Metric</th>
 <th>Raw Stars</th>
@@ -108,56 +112,85 @@ echo "<table border='1'>
 </tr>";
 echo "<tr>";
 echo "<td>" . "Unweighted" . "</td>";
-echo "<td><center><span title='Sum of stars divided by number of reviews'>" . number_format($stars/$num,2) . "</span></td>";
-echo "<td><center><span title='Sum of adjusted stars divided by number of reviews'>" . number_format($adj_stars/$num,2) . "</span></td>";
+echo "<td><span title='Average star rating of reviews'><center>" . number_format($stars/$num,2) . "</span></td>";
+echo "<td><span title='Average of difference between review rating and that average rating of that user.'><center>" . number_format($adj_stars/$num,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by user friends" . "</td>";
-echo "<td><center><span title='Sum of products log2(friends) and stars all divided by sum of log2(friends)'>" . number_format($total_stars_friends/$friends_weight,2) . "</span></td>";
-echo "<td><center><span title='Sum of products log2(friends) and adjusted stars all divided by sum of log2(friends)'>" . number_format($total_stars_friends_adj/$friends_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of stars, weighted by log2(friends of user).'><center>" . number_format($total_stars_friends/$friends_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of adjusted stars, weighted by log2(friends of user).'><center>" . number_format($total_stars_friends_adj/$friends_weight,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by user votes" . "</td>";
-echo "<td><center><span title='Sum of products user average votes and stars all divided by sum of average votes'>" . number_format($user_votes/$vote_weight,2) . "</span></td>";
-echo "<td><center><span title='Sum of products user average votes and adjusted stars all divided by sum of average votes'>" . number_format($user_votes_adj/$vote_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of stars, weighted by the average number of votes on this user's reviews.'><center>" . number_format($user_votes/$vote_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of adjusted stars, weighted by the average number of votes on this user's reviews.'><center>" . number_format($user_votes_adj/$vote_weight,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "Weighted by review votes" . "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Funny" . "</td>";
-echo "<td><center><span title='Sum of products review funny votes and stars all divided by sum of funny votes'>" . number_format($funny_votes/$funny_weight,2) . "</span></td>";
-echo "<td><center><span title='Sum of products review funny votes and adjusted stars all divided by sum of funny votes'>" . number_format($funny_votes_adj/$funny_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of stars, weighted by the number of funny votes on the review.'><center>" . number_format($funny_votes/$funny_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of adjusted stars, weighted by the number of funny votes on the review.'><center>" . number_format($funny_votes_adj/$funny_weight,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Useful" . "</td>";
-echo "<td><center><span title='Sum of products review useful votes and stars all divided by sum of useful votes'>" . number_format($useful_votes/$useful_weight,2) . "</span></td>";
-echo "<td><center><span title='Sum of products review useful votes and adjusted stars all divided by sum of useful votes'>" . number_format($useful_votes_adj/$useful_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of stars, weighted by the number of useful votes on the review.'><center>" . number_format($useful_votes/$useful_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of adjusted stars, weighted by the number of useful votes on the review.'><center>" . number_format($useful_votes_adj/$useful_weight,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Cool" . "</td>";
-echo "<td><center><span title='Sum of products review cool votes and stars all divided by sum of cool votes'>" . number_format($cool_votes/$cool_weight,2) . "</span></td>";
-echo "<td><center><span title='Sum of products review cool votes and adjusted stars all divided by sum of funny votes'>" . number_format($cool_votes_adj/$cool_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of stars, weighted by the number of cool votes on the review.'><center>" . number_format($cool_votes/$cool_weight,2) . "</span></td>";
+echo "<td><span title='Weighted average of adjusted stars, weighted by the number of cool votes on the review.'><center>" . number_format($cool_votes_adj/$cool_weight,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td>" . "By time of day" . "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Breakfast" . "</td>";
-echo "<td><center><span title='Sum of stars for breakfast divided by number of breakfasts'>" . number_format($breakfast_stars/$breakfast,2) . "</span></td>";
-echo "<td><center><span title='Sum of adjusted stars for breakfast divided by number of breakfasts'>" . number_format($breakfast_stars_adj/$breakfast,2) . "</span></td>";
+echo "<td><span title='Average stars for reviews that mention breakfast or morning.'><center>" . number_format($breakfast_stars/$breakfast,2) . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention breakfast or morning.'><center>" . number_format($breakfast_stars_adj/$breakfast,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Lunch" . "</td>";
-echo "<td><center><span title='Sum of stars for lunch divided by number of lunches'>" . number_format($lunch_stars/$lunch,2) . "</span></td>";
-echo "<td><center><span title='Sum of adjusted stars for lunch divided by number of lunches'>" . number_format($lunch_stars_adj/$lunch,2) . "</span></td>";
+echo "<td><span title='Average stars for reviews that mention lunch, afternoon, or midday.'><center>" . number_format($lunch_stars/$lunch,2) . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention lunch, afternoon or midday.'><center>" . number_format($lunch_stars_adj/$lunch,2) . "</span></td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Dinner" . "</td>";
-echo "<td><center><span title='Sum of stars for dinner divided by number of dinners'>" . number_format($dinner_stars/$dinner,2) . "</span></td>";
-echo "<td><center><span title='Sum of adjusted stars for dinner divided by number of dinners'>" . number_format($dinner_stars_adj/$dinner,2) . "</span></td>";
+echo "<td><span title='Average stars for reviews that mention dinner, evening, drinks or night.'><center>" . number_format($dinner_stars/$dinner,2) . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention dinner, evening, drinks or night.'><center>" . number_format($dinner_stars_adj/$dinner,2) . "</span></td>";
 echo "</tr>";
 echo "</table>";
+
+echo "<center>";
+echo "<br><br><br><br><table border='1'>
+<tr>
+<th>Text</th>
+<th>stars</th>
+<th>Stars vs. Average</th>
+<th>Friends Weight</th>
+<th>User Vote Weight</th>
+<th>Funny Weight</th>
+<th>Useful Weight</th>
+<th>Cool Weight</th>
+</tr>";
+while($row = $result->fetchArray())
+  {
+  if($row['date'] >= $start_date and $row['date'] <= $end_date and in_array($row['day'],$days)){
+  echo "<tr>";
+echo "<td>" . $row['content'] . "</td>";
+echo "<td><center>" . $row['stars'] . "</td>";
+echo "<td><center>" . number_format($row['adj_stars'],2) . "</td>";
+echo "<td><center>" . number_format(max(log($row['user_friends'],2),0)/$friends_weight,2) . "</td>";
+echo "<td><center>" . number_format($row['user_avg_votes']/$vote_weight,2) . "</td>";
+echo "<td><center>" . number_format(($row['funny_votes']+1)/$funny_weight,2) . "</td>";
+echo "<td><center>" . number_format(($row['useful_votes']+1)/$useful_weight,2) . "</td>";
+echo "<td><center>" . number_format(($row['cool_votes']+1)/$cool_weight,2) . "</td>";
+echo "</tr>";
+  }
+  }
+ echo "</table>";
 ?>
 </body>
 </html>
