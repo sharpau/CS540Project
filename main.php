@@ -1,7 +1,7 @@
 <html>
 <body>
 <br><br>
-<center><h1>Restaurant Performance Analysis Tool</h1>
+<center><h1>Restaurant Performance Evaluation Tool</h1>
 <?php
 
 class MyDB extends SQLite3
