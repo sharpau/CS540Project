@@ -148,18 +148,36 @@ echo "<td>" . "By time of day" . "</td>";
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Breakfast" . "</td>";
+if($breakfast !=0){
 echo "<td><span title='Average stars for reviews that mention breakfast or morning.'><center>" . number_format($breakfast_stars/$breakfast,2) . "</span></td>";
 echo "<td><span title='Average adjusted stars for reviews that mention breakfast or morning.'><center>" . number_format($breakfast_stars_adj/$breakfast,2) . "</span></td>";
+}
+else {
+echo "<td><span title='Average stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+}
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Lunch" . "</td>";
+if($lunch !=0){
 echo "<td><span title='Average stars for reviews that mention lunch, afternoon, or midday.'><center>" . number_format($lunch_stars/$lunch,2) . "</span></td>";
 echo "<td><span title='Average adjusted stars for reviews that mention lunch, afternoon or midday.'><center>" . number_format($lunch_stars_adj/$lunch,2) . "</span></td>";
+}
+else {
+echo "<td><span title='Average stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+}
 echo "</tr>";
 echo "<tr>";
 echo "<td><center>" . "Dinner" . "</td>";
+if($dinner !=0){
 echo "<td><span title='Average stars for reviews that mention dinner, evening, drinks or night.'><center>" . number_format($dinner_stars/$dinner,2) . "</span></td>";
 echo "<td><span title='Average adjusted stars for reviews that mention dinner, evening, drinks or night.'><center>" . number_format($dinner_stars_adj/$dinner,2) . "</span></td>";
+}
+else {
+echo "<td><span title='Average stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+echo "<td><span title='Average adjusted stars for reviews that mention breakfast or morning.'><center>" . 'N/A' . "</span></td>";
+}
 echo "</tr>";
 echo "</table>";
 
@@ -167,7 +185,7 @@ echo "<center>";
 echo "<br><br><br><br><table border='1'>
 <tr>
 <th>Text</th>
-<th>stars</th>
+<th>Stars</th>
 <th>Stars vs. Average</th>
 <th>Friends Weight</th>
 <th>User Vote Weight</th>
