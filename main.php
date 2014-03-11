@@ -19,7 +19,7 @@ echo "<br><br><br><br><br><center><form action='detail.php' method='post'>";
 echo '<select name = "id" size = 1>';
 while($row = $result->fetchArray())
   {
-	echo "<option value=" .$row['business_id'] . ">" . $row['name'] . ' - ' . substr($row['address'],0,20) . '...' . "</option>";
+	echo "<option value=" .$row['business_id'] . ">" . substr($row['name'] . ' - ' . $row['address'],0,50) . '...' . "</option>";
   }
 echo "</select>";
 echo "<br>";
