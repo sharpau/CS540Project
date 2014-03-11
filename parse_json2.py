@@ -19,7 +19,7 @@ print "Parsing jsons into dicts done"
 conn = sqlite3.connect("test.db")
 c = conn.cursor()
 c.execute("DROP TABLE IF EXISTS businesses")
-c.execute("CREATE TABLE businesses ( business_id text, name text, stars real, checkins text)")
+c.execute("CREATE TABLE businesses (business_id text, name text, address text, stars real, checkins text)")
 c.execute("CREATE INDEX business_id_idx ON businesses (business_id)")
 for b in results[filenames[1]]:
     # businesses
@@ -27,10 +27,10 @@ for b in results[filenames[1]]:
 
     if len(checkins) == 1:
         dict_as_str = str(checkins[0]["checkin_info"])
-        c.execute("INSERT INTO businesses VALUES (?,?,?,?)", (b["business_id"], b["name"], b["stars"], dict_as_str))
+        c.execute("INSERT INTO businesses VALUES (?,?,?,?,?)", (b["business_id"], b["name"], b["full_address"], b["stars"], dict_as_str))
 
     elif len(checkins) == 0:
-        c.execute("INSERT INTO businesses VALUES (?,?,?,?)", (b["business_id"], b["name"], b["stars"], ""))
+        c.execute("INSERT INTO businesses VALUES (?,?,?,?,?)", (b["business_id"], b["name"], b["full_address"], b["stars"], ""))
         
     else:
         assert False
